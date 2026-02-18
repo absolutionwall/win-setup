@@ -1,6 +1,6 @@
 # ============================================
 # Windows Post-Installation Script
-# By: absolutionwall
+# By: Absolutionwall
 # ============================================
 
 #Requires -RunAsAdministrator
@@ -139,7 +139,7 @@ function Show-Menu {
     Write-Host "  [1] Selección Manual de Programas" -ForegroundColor Green
     Write-Host "  [0] Salir" -ForegroundColor Red
     Write-Host ""
-    Write-Host "Comandos ocultos: WALLPC, GALAPC" -ForegroundColor DarkGray
+    Write-Host ""
     Write-Host ""
 }
 
