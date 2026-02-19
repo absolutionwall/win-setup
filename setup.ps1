@@ -140,7 +140,6 @@ function Show-Menu {
     Write-Host "  [0] Salir" -ForegroundColor Red
     Write-Host ""
     Write-Host ""
-    Write-Host ""
 }
 
 function Show-ProgramSelection {
@@ -286,6 +285,42 @@ function Show-Confirmation {
     return ($confirm.ToUpper() -eq "S")
 }
 
+function Install-RainmeterConfig {
+    $repoBase = "https://raw.githubusercontent.com/absolutionwall/win-setup/main"
+    $rainmeterConfigUrl = "$repoBase/configs/rainmeter/Rainmeter.rar"
+    $documentsPath = [Environment]::GetFolderPath("MyDocuments")
+    $rainmeterPath = Join-Path $documentsPath "Rainmeter"
+    $tempRarPath = Join-Path $env:TEMP "Rainmeter.rar"
+    
+    try {
+        # Descargar el RAR
+        Write-Host "      → Descargando configuración..." -ForegroundColor Gray
+        Invoke-WebRequest -Uri $rainmeterConfigUrl -OutFile $tempRarPath -ErrorAction Stop
+        
+        # Verificar que WinRAR esté instalado
+        $winrarPath = "C:\Program Files\WinRAR\WinRAR.exe"
+        if (Test-Path $winrarPath) {
+            # Crear carpeta Rainmeter si no existe
+            if (!(Test-Path $rainmeterPath)) {
+                New-Item -ItemType Directory -Path $rainmeterPath -Force | Out-Null
+            }
+            
+            # Extraer con WinRAR
+            Write-Host "      → Extrayendo en Mis Documentos..." -ForegroundColor Gray
+            Start-Process -FilePath $winrarPath -ArgumentList "x -o+ `"$tempRarPath`" `"$rainmeterPath\`"" -Wait -NoNewWindow
+            
+            # Limpiar archivo temporal
+            Remove-Item $tempRarPath -Force
+            
+            Write-Host "    ✓ Configuración de Rainmeter instalada en: $rainmeterPath" -ForegroundColor Green
+        } else {
+            Write-Host "    ⚠ WinRAR no encontrado. Descarga manual en: $tempRarPath" -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host "    ✗ Error descargando configuración de Rainmeter: $($_.Exception.Message)" -ForegroundColor Red
+    }
+}
+
 function Install-Programs {
     param(
         [array]$Programs,
@@ -320,6 +355,12 @@ function Install-Programs {
             
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "  ✓ $($app.Name) instalado correctamente" -ForegroundColor Green
+                
+                # Configuración especial para Rainmeter
+                if ($prog -eq "Rainmeter") {
+                    Write-Host "    → Descargando configuración de Rainmeter..." -ForegroundColor Yellow
+                    Install-RainmeterConfig
+                }
             } else {
                 Write-Host "  ✗ Error instalando $($app.Name)" -ForegroundColor Red
             }
