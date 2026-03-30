@@ -2,7 +2,6 @@
 # Windows Post-Installation Script
 # By: Absolutionwall
 # ============================================
-
 #Requires -RunAsAdministrator
 
 # Configuración de colores
@@ -13,7 +12,6 @@ Clear-Host
 # ============================================
 # SISTEMA DE LOGGING
 # ============================================
-
 $LogPath = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "setup-log.txt"
 
 function Write-Log {
@@ -26,23 +24,21 @@ function Write-Log {
     $line = "[$timestamp] [$Level] $Message"
     Add-Content -Path $LogPath -Value $line -Encoding UTF8
 
-    # Echo a consola solo en caso de WARN/ERROR para no duplicar salida visual
     switch ($Level) {
         "WARN"    { Write-Host "  ⚠ $Message" -ForegroundColor Yellow }
         "ERROR"   { Write-Host "  ✗ $Message" -ForegroundColor Red }
-        "SECTION" { Write-Host "" }   # silencioso; la sección ya se imprime con Write-Host
+        "SECTION" { Write-Host "" }
     }
 }
 
 function Write-LogSeparator {
     param([string]$Title = "")
     $sep = "=" * 60
-    $line = if ($Title) { "`r`n$sep`r`n  $Title`r`n$sep" } else { $sep }
+    $line = if ($Title) { "`r`n$sep`r`n $Title`r`n$sep" } else { $sep }
     Add-Content -Path $LogPath -Value $line -Encoding UTF8
 }
 
-# Encabezado inicial del log
-Write-LogSeparator "SETUP INICIADO  -  $(Get-Date -Format 'dddd dd/MM/yyyy HH:mm:ss')"
+Write-LogSeparator "SETUP INICIADO - $(Get-Date -Format 'dddd dd/MM/yyyy HH:mm:ss')"
 Write-Log "Usuario : $env:USERNAME" "INFO"
 Write-Log "Equipo  : $env:COMPUTERNAME" "INFO"
 Write-Log "Log     : $LogPath" "INFO"
@@ -50,51 +46,36 @@ Write-Log "Log     : $LogPath" "INFO"
 # ============================================
 # DEFINICIÓN DE PROGRAMAS
 # ============================================
-
 $AllPrograms = @{
-    # Programas base
-    "Chrome"         = @{ ID = "Google.Chrome";                    Name = "Google Chrome" }
-    "Firefox"        = @{ ID = "Mozilla.Firefox";                  Name = "Mozilla Firefox" }
-    "Brave"          = @{ ID = "Brave.Brave";                      Name = "Brave Browser" }
-    "Edge"           = @{ ID = "Microsoft.Edge";                   Name = "Microsoft Edge" }
-
-    # Multimedia
-    "VLC"            = @{ ID = "VideoLAN.VLC";                     Name = "VLC Media Player" }
-    "OBS"            = @{ ID = "OBSProject.OBSStudio";             Name = "OBS Studio" }
-    "Audacity"       = @{ ID = "Audacity.Audacity";                Name = "Audacity" }
-    "HandBrake"      = @{ ID = "HandBrake.HandBrake";              Name = "HandBrake" }
-
-    # Gaming
-    "Steam"          = @{ ID = "Valve.Steam";                      Name = "Steam" }
-
-    # Utilidades
-    "WinRAR"         = @{ ID = "RARLab.WinRAR";                    Name = "WinRAR" }
-    "7Zip"           = @{ ID = "7zip.7zip";                        Name = "7-Zip" }
-    "NotepadPlusPlus"= @{ ID = "Notepad++.Notepad++";              Name = "Notepad++" }
-    "Everything"     = @{ ID = "voidtools.Everything";             Name = "Everything Search" }
-    "qBittorrent"    = @{ ID = "qBittorrent.qBittorrent";          Name = "qBittorrent" }
-
-    # Ofimática
-    "LibreOffice"    = @{ ID = "TheDocumentFoundation.LibreOffice"; Name = "LibreOffice" }
-    "Office"         = @{ ID = "Microsoft.Office";                 Name = "Microsoft Office" }
-
-    # Herramientas
-    "MSIAfterburner" = @{ ID = "Guru3D.Afterburner";               Name = "MSI Afterburner" }
-    "HWiNFO"         = @{ ID = "REALiX.HWiNFO";                   Name = "HWiNFO" }
-    "CoreTemp"       = @{ ID = "ALCPU.CoreTemp";                   Name = "Core Temp" }
-    "Rainmeter"      = @{ ID = "Rainmeter.Rainmeter";              Name = "Rainmeter" }
-
-    # Microsoft Store Apps
-    "FDM"            = @{ ID = "9WZDNCRDH8Z7"; Name = "Free Download Manager"; Source = "msstore" }
-    "FxSound"        = @{ ID = "9NBLGGH4PNM9"; Name = "FxSound";               Source = "msstore" }
-    "Lively"         = @{ ID = "9NTM2QC6QWS7"; Name = "Lively Wallpaper";      Source = "msstore" }
-    "RealtekAudio"   = @{ ID = "9P0PHKM0D8P8"; Name = "Realtek Audio Console"; Source = "msstore" }
+    "Chrome"          = @{ ID = "Google.Chrome";                         Name = "Google Chrome" }
+    "Firefox"         = @{ ID = "Mozilla.Firefox";                       Name = "Mozilla Firefox" }
+    "Brave"           = @{ ID = "Brave.Brave";                           Name = "Brave Browser" }
+    "Edge"            = @{ ID = "Microsoft.Edge";                        Name = "Microsoft Edge" }
+    "VLC"             = @{ ID = "VideoLAN.VLC";                          Name = "VLC Media Player" }
+    "OBS"             = @{ ID = "OBSProject.OBSStudio";                  Name = "OBS Studio" }
+    "Audacity"        = @{ ID = "Audacity.Audacity";                     Name = "Audacity" }
+    "HandBrake"       = @{ ID = "HandBrake.HandBrake";                   Name = "HandBrake" }
+    "Steam"           = @{ ID = "Valve.Steam";                           Name = "Steam" }
+    "WinRAR"          = @{ ID = "RARLab.WinRAR";                         Name = "WinRAR" }
+    "7Zip"            = @{ ID = "7zip.7zip";                             Name = "7-Zip" }
+    "NotepadPlusPlus" = @{ ID = "Notepad++.Notepad++";                   Name = "Notepad++" }
+    "Everything"      = @{ ID = "voidtools.Everything";                  Name = "Everything Search" }
+    "qBittorrent"     = @{ ID = "qBittorrent.qBittorrent";               Name = "qBittorrent" }
+    "LibreOffice"     = @{ ID = "TheDocumentFoundation.LibreOffice";     Name = "LibreOffice" }
+    "Office"          = @{ ID = "Microsoft.Office";                      Name = "Microsoft Office" }
+    "MSIAfterburner"  = @{ ID = "Guru3D.Afterburner";                    Name = "MSI Afterburner" }
+    "HWiNFO"          = @{ ID = "REALiX.HWiNFO";                         Name = "HWiNFO" }
+    "CoreTemp"        = @{ ID = "ALCPU.CoreTemp";                        Name = "Core Temp" }
+    "Rainmeter"       = @{ ID = "Rainmeter.Rainmeter";                   Name = "Rainmeter" }
+    "FDM"             = @{ ID = "9WZDNCRDH8Z7"; Name = "Free Download Manager"; Source = "msstore" }
+    "FxSound"         = @{ ID = "9NBLGGH4PNM9"; Name = "FxSound";               Source = "msstore" }
+    "Lively"          = @{ ID = "9NTM2QC6QWS7"; Name = "Lively Wallpaper";       Source = "msstore" }
+    "RealtekAudio"    = @{ ID = "9P0PHKM0D8P8"; Name = "Realtek Audio Console";  Source = "msstore" }
 }
 
 # ============================================
 # PERFILES PREDEFINIDOS
 # ============================================
-
 $Profiles = @{
     "WALLPC" = @(
         "Chrome", "Steam", "WinRAR", "MSIAfterburner", "NotepadPlusPlus",
@@ -110,7 +91,6 @@ $Profiles = @{
 # ============================================
 # TWEAKS DE WINDOWS
 # ============================================
-
 $WindowsTweaks = @{
     "ClassicContextMenu" = @{
         Name   = "Menú contextual clásico (Win11)"
@@ -163,7 +143,7 @@ function Show-Banner {
     Write-Host "╔════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
     Write-Host "║                                                        ║" -ForegroundColor Cyan
     Write-Host "║        WINDOWS POST-INSTALACIÓN SETUP                  ║" -ForegroundColor Cyan
-    Write-Host "║        by absolutionwall                               ║" -ForegroundColor Cyan
+    Write-Host "║                  by absolutionwall                     ║" -ForegroundColor Cyan
     Write-Host "║                                                        ║" -ForegroundColor Cyan
     Write-Host "╚════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
     Write-Host ""
@@ -173,9 +153,10 @@ function Show-Menu {
     Show-Banner
     Write-Host "Selecciona una opción:" -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "  [1] Selección Manual de Programas" -ForegroundColor Green
-    Write-Host "  [2] Registrar Tareas Programadas de Mantenimiento" -ForegroundColor Green
-    Write-Host "  [0] Salir" -ForegroundColor Red
+    Write-Host "  [1] Selección Manual de Programas"                    -ForegroundColor Green
+    Write-Host "  [2] Registrar Tareas Programadas de Mantenimiento"    -ForegroundColor Green
+    Write-Host "  [3] Aplicar Chris Titus Tech Tool (act.win)"          -ForegroundColor Green
+    Write-Host "  [0] Salir"                                            -ForegroundColor Red
     Write-Host ""
     Write-Host ""
 }
@@ -185,7 +166,7 @@ function Show-ProgramSelection {
     Write-Host "Selecciona los programas a instalar (separados por comas):" -ForegroundColor Yellow
     Write-Host ""
 
-    $counter = 1
+    $counter     = 1
     $programList = @()
 
     Write-Host "═══ NAVEGADORES ═══" -ForegroundColor Cyan
@@ -239,7 +220,7 @@ function Show-ProgramSelection {
 
     Write-Host "`n═══ TWEAKS DE WINDOWS ═══" -ForegroundColor Magenta
     $tweakCounter = 100
-    $tweakList = @()
+    $tweakList    = @()
     foreach ($key in $WindowsTweaks.Keys) {
         Write-Host "  [$tweakCounter] $($WindowsTweaks[$key].Name)" -ForegroundColor White
         $tweakList += $key
@@ -248,22 +229,20 @@ function Show-ProgramSelection {
 
     Write-Host ""
     Write-Host "Ingresa los números separados por comas (ej: 1,3,5,100,101)" -ForegroundColor Yellow
-    Write-Host "O escribe 'TODO' para seleccionar todos los programas" -ForegroundColor Yellow
-    Write-Host "Escribe '0' para volver" -ForegroundColor Red
+    Write-Host "O escribe 'TODO' para seleccionar todos los programas"        -ForegroundColor Yellow
+    Write-Host "Escribe '0' para volver"                                      -ForegroundColor Red
     Write-Host ""
 
     $selection = Read-Host "Selección"
 
-    if ($selection -eq "0") {
-        return $null
-    }
+    if ($selection -eq "0") { return $null }
 
     $selectedPrograms = @()
-    $selectedTweaks = @()
+    $selectedTweaks   = @()
 
     if ($selection.ToUpper() -eq "TODO") {
         $selectedPrograms = $programList
-        $selectedTweaks = $tweakList
+        $selectedTweaks   = $tweakList
     } else {
         $numbers = $selection -split ',' | ForEach-Object { $_.Trim() }
         foreach ($num in $numbers) {
@@ -300,7 +279,6 @@ function Show-Confirmation {
 
     Write-Host "Se instalarán los siguientes programas:" -ForegroundColor Yellow
     Write-Host ""
-
     foreach ($prog in $Programs) {
         if ($AllPrograms.ContainsKey($prog)) {
             Write-Host "  ✓ $($AllPrograms[$prog].Name)" -ForegroundColor Green
@@ -319,19 +297,18 @@ function Show-Confirmation {
 
     Write-Host ""
     $confirm = Read-Host "¿Confirmar instalación? (S/N)"
-
     return ($confirm.ToUpper() -eq "S")
 }
 
 function Install-RainmeterConfig {
-    $repoBase          = "https://raw.githubusercontent.com/absolutionwall/win-setup/main"
+    $repoBase           = "https://raw.githubusercontent.com/absolutionwall/win-setup/main"
     $rainmeterConfigUrl = "$repoBase/configs/rainmeter/Rainmeter.rar"
-    $documentsPath     = [Environment]::GetFolderPath("MyDocuments")
-    $rainmeterPath     = Join-Path $documentsPath "Rainmeter"
-    $tempRarPath       = Join-Path $env:TEMP "Rainmeter.rar"
+    $documentsPath      = [Environment]::GetFolderPath("MyDocuments")
+    $rainmeterPath      = Join-Path $documentsPath "Rainmeter"
+    $tempRarPath        = Join-Path $env:TEMP "Rainmeter.rar"
 
     try {
-        Write-Host "      → Descargando configuración..." -ForegroundColor Gray
+        Write-Host "   → Descargando configuración..." -ForegroundColor Gray
         Write-Log "Rainmeter: descargando config desde $rainmeterConfigUrl" "INFO"
         Invoke-WebRequest -Uri $rainmeterConfigUrl -OutFile $tempRarPath -ErrorAction Stop
 
@@ -340,17 +317,17 @@ function Install-RainmeterConfig {
             if (!(Test-Path $rainmeterPath)) {
                 New-Item -ItemType Directory -Path $rainmeterPath -Force | Out-Null
             }
-            Write-Host "      → Extrayendo en Mis Documentos..." -ForegroundColor Gray
+            Write-Host "   → Extrayendo en Mis Documentos..." -ForegroundColor Gray
             Start-Process -FilePath $winrarPath -ArgumentList "x -o+ `"$tempRarPath`" `"$rainmeterPath\`"" -Wait -NoNewWindow
             Remove-Item $tempRarPath -Force
-            Write-Host "    ✓ Configuración de Rainmeter instalada en: $rainmeterPath" -ForegroundColor Green
+            Write-Host "   ✓ Configuración de Rainmeter instalada en: $rainmeterPath" -ForegroundColor Green
             Write-Log "Rainmeter: config instalada en $rainmeterPath" "OK"
         } else {
-            Write-Host "    ⚠ WinRAR no encontrado. Descarga manual en: $tempRarPath" -ForegroundColor Yellow
+            Write-Host "   ⚠ WinRAR no encontrado. Descarga manual en: $tempRarPath" -ForegroundColor Yellow
             Write-Log "Rainmeter: WinRAR no encontrado, config queda en $tempRarPath" "WARN"
         }
     } catch {
-        Write-Host "    ✗ Error descargando configuración de Rainmeter: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "   ✗ Error descargando configuración de Rainmeter: $($_.Exception.Message)" -ForegroundColor Red
         Write-Log "Rainmeter: error descargando config - $($_.Exception.Message)" "ERROR"
     }
 }
@@ -366,7 +343,6 @@ function Install-Programs {
     Write-Host ""
     Write-LogSeparator "INSTALACIÓN DE PROGRAMAS"
 
-    # Verificar Winget
     if (!(Get-Command winget -ErrorAction SilentlyContinue)) {
         Write-Host "ERROR: Winget no está instalado." -ForegroundColor Red
         Write-Host "Instala 'App Installer' desde Microsoft Store." -ForegroundColor Yellow
@@ -374,6 +350,7 @@ function Install-Programs {
         pause
         return
     }
+
     Write-Log "Winget encontrado. Versión: $(winget --version)" "INFO"
 
     $total   = $Programs.Count
@@ -393,9 +370,8 @@ function Install-Programs {
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "  ✓ $($app.Name) instalado correctamente" -ForegroundColor Green
                 Write-Log "$($app.Name): instalado OK" "OK"
-
                 if ($prog -eq "Rainmeter") {
-                    Write-Host "    → Descargando configuración de Rainmeter..." -ForegroundColor Yellow
+                    Write-Host "  → Descargando configuración de Rainmeter..." -ForegroundColor Yellow
                     Install-RainmeterConfig
                 }
             } else {
@@ -405,7 +381,6 @@ function Install-Programs {
         }
     }
 
-    # Aplicar tweaks
     if ($Tweaks.Count -gt 0) {
         Write-Host "`n═══ APLICANDO TWEAKS ═══" -ForegroundColor Magenta
         Write-Host ""
@@ -441,7 +416,6 @@ function Install-ProfileSpecific {
     Write-Host ""
     Write-LogSeparator "CONFIGURACIONES ADICIONALES - PERFIL $ProfileName"
 
-    # Copiar archivos de configuración NVIDIA
     Write-Host "→ Configurando archivos NVIDIA..." -ForegroundColor Cyan
     Write-Log "NVIDIA: copiando archivos de configuración" "INFO"
     $nvidiaPath = "C:\ProgramData\NVIDIA Corporation\Drs"
@@ -459,7 +433,6 @@ function Install-ProfileSpecific {
         Write-Log "NVIDIA: carpeta $nvidiaPath no encontrada, se omite" "WARN"
     }
 
-    # Copiar licencia WinRAR
     Write-Host "→ Configurando licencia WinRAR..." -ForegroundColor Cyan
     Write-Log "WinRAR: instalando licencia" "INFO"
     $winrarPath = "C:\Program Files\WinRAR"
@@ -476,7 +449,6 @@ function Install-ProfileSpecific {
         Write-Log "WinRAR: carpeta no encontrada, se omite licencia" "WARN"
     }
 
-    # Instalar Twitch Drops Miner
     Write-Host "→ Instalando Twitch Drops Miner..." -ForegroundColor Cyan
     Write-Log "Twitch Drops Miner: descargando instalador" "INFO"
     try {
@@ -490,18 +462,15 @@ function Install-ProfileSpecific {
         Write-Log "Twitch Drops Miner: error - $($_.Exception.Message)" "ERROR"
     }
 
-    # Driver NVIDIA Game Ready
     Write-Host "→ Descargando Driver NVIDIA Game Ready..." -ForegroundColor Cyan
     Write-Host "  ℹ Abre GeForce Experience o descarga desde nvidia.com" -ForegroundColor Yellow
     Write-Log "NVIDIA Driver: recordatorio mostrado al usuario" "INFO"
 
-    # Drivers ASUS B550
     Write-Host "→ Drivers ASUS Prime B550..." -ForegroundColor Cyan
     Write-Host "  ℹ Abriendo página de descarga de ASUS..." -ForegroundColor Yellow
     Write-Log "ASUS B550: abriendo página de drivers" "INFO"
     Start-Process "https://www.asus.com/motherboards-components/motherboards/prime/prime-b550m-a-wifi-ii/helpdesk_download/"
 
-    # Chrome como predeterminado
     Write-Host "→ Estableciendo Chrome como predeterminado..." -ForegroundColor Cyan
     Write-Log "Chrome: abriendo configuración de apps predeterminadas" "INFO"
     Start-Process "ms-settings:defaultapps"
@@ -517,14 +486,12 @@ function Install-ProfileSpecific {
 
 function Register-MaintenanceTasks {
     param([switch]$Silent)
+
     Show-Banner
     Write-Host "═══ REGISTRANDO TAREAS DE MANTENIMIENTO ═══" -ForegroundColor Magenta
     Write-Host ""
     Write-LogSeparator "REGISTRO DE TAREAS PROGRAMADAS"
 
-    # ------------------------------------------------------------------
-    # 1. Disk Cleanup - cleanmgr /sagerun:1  (lunes 14:00)
-    # ------------------------------------------------------------------
     $taskName_DC  = "Mantenimiento - Disk Cleanup Semanal"
     $taskDescr_DC = "Ejecuta cleanmgr con el perfil sageset:1. Limpia archivos temporales, papelera, cache de Internet, Delivery Optimization, minidumps, Windows Defender, Update Cleanup y otras categorias seleccionadas."
 
@@ -538,7 +505,6 @@ function Register-MaintenanceTasks {
             -RunOnlyIfIdle:$false `
             -StartWhenAvailable `
             -WakeToRun:$false
-
         Register-ScheduledTask `
             -TaskName    $taskName_DC `
             -Description $taskDescr_DC `
@@ -547,7 +513,6 @@ function Register-MaintenanceTasks {
             -Settings    $settings_DC `
             -RunLevel    Highest `
             -Force | Out-Null
-
         Write-Host "  ✓ Tarea registrada: $taskName_DC" -ForegroundColor Green
         Write-Log "Tarea registrada OK: $taskName_DC (lunes 14:00)" "OK"
     } catch {
@@ -555,14 +520,10 @@ function Register-MaintenanceTasks {
         Write-Log "Error registrando tarea Disk Cleanup: $($_.Exception.Message)" "ERROR"
     }
 
-    # ------------------------------------------------------------------
-    # 2. Winget Update  (lunes 14:30)
-    # ------------------------------------------------------------------
     $taskName_WG  = "Mantenimiento - Winget Update Semanal"
     $taskDescr_WG = "Actualiza todas las aplicaciones instaladas via winget. Registra la actividad en D:\winget-log.txt."
-
-    $scriptDir  = "C:\Scripts\Maintenance"
-    $scriptPath = "$scriptDir\Update-WingetApps.ps1"
+    $scriptDir    = "C:\Scripts\Maintenance"
+    $scriptPath   = "$scriptDir\Update-WingetApps.ps1"
 
     Write-Host "  → Creando script de actualización en $scriptPath..." -ForegroundColor Cyan
     Write-Log "Creando script de winget update en $scriptPath" "INFO"
@@ -571,7 +532,6 @@ function Register-MaintenanceTasks {
             New-Item -ItemType Directory -Path $scriptDir -Force | Out-Null
             Write-Log "Carpeta creada: $scriptDir" "OK"
         }
-
         $scriptContent = @'
 # Actualizar todas las aplicaciones instaladas con winget
 winget upgrade --all --include-unknown --silent --accept-package-agreements --accept-source-agreements
@@ -598,7 +558,6 @@ Add-Content -Path "D:\winget-log.txt" -Value "Actualizacion ejecutada: $date"
             -RunOnlyIfIdle:$false `
             -StartWhenAvailable `
             -WakeToRun:$false
-
         Register-ScheduledTask `
             -TaskName    $taskName_WG `
             -Description $taskDescr_WG `
@@ -607,7 +566,6 @@ Add-Content -Path "D:\winget-log.txt" -Value "Actualizacion ejecutada: $date"
             -Settings    $settings_WG `
             -RunLevel    Highest `
             -Force | Out-Null
-
         Write-Host "  ✓ Tarea registrada: $taskName_WG" -ForegroundColor Green
         Write-Log "Tarea registrada OK: $taskName_WG (lunes 14:30)" "OK"
     } catch {
@@ -616,9 +574,9 @@ Add-Content -Path "D:\winget-log.txt" -Value "Actualizacion ejecutada: $date"
     }
 
     Write-Host ""
-    Write-Host "  ✓ Tareas de mantenimiento configuradas." -ForegroundColor Green
-    Write-Host "    Log de winget : D:\winget-log.txt" -ForegroundColor Gray
-    Write-Host "    Log de setup  : $LogPath" -ForegroundColor Gray
+    Write-Host "  ✓ Tareas de mantenimiento configuradas."  -ForegroundColor Green
+    Write-Host "  Log de winget : D:\winget-log.txt"        -ForegroundColor Gray
+    Write-Host "  Log de setup  : $LogPath"                 -ForegroundColor Gray
     Write-Host ""
     Write-Log "Registro de tareas de mantenimiento finalizado." "INFO"
 
@@ -626,6 +584,43 @@ Add-Content -Path "D:\winget-log.txt" -Value "Actualizacion ejecutada: $date"
         Write-Host "Presiona cualquier tecla para continuar..." -ForegroundColor Yellow
         $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     }
+}
+
+# ============================================
+# NUEVA FUNCIÓN: Chris Titus Tech Tool (act.win)
+# ============================================
+
+function Invoke-ActWin {
+    Show-Banner
+    Write-Host "═══ CHRIS TITUS TECH TOOL (act.win) ═══" -ForegroundColor Magenta
+    Write-Host ""
+    Write-Host "  Esta herramienta permite optimizar Windows, instalar" -ForegroundColor Gray
+    Write-Host "  programas, aplicar tweaks y más, de forma visual."    -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "  Fuente: https://get.activated.win" -ForegroundColor DarkGray
+    Write-Host ""
+
+    $confirm = Read-Host "¿Deseas ejecutar la herramienta ahora? (S/N)"
+    if ($confirm.ToUpper() -ne "S") {
+        Write-Log "Act.win: cancelado por el usuario." "INFO"
+        return
+    }
+
+    Write-Host ""
+    Write-Host "  → Descargando y ejecutando act.win..." -ForegroundColor Cyan
+    Write-Log "Act.win: iniciando ejecución de irm https://get.activated.win | iex" "INFO"
+
+    try {
+        Invoke-Expression (Invoke-RestMethod "https://get.activated.win")
+        Write-Log "Act.win: ejecutado correctamente." "OK"
+    } catch {
+        Write-Host "  ✗ Error ejecutando act.win: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Log "Act.win: error - $($_.Exception.Message)" "ERROR"
+    }
+
+    Write-Host ""
+    Write-Host "Presiona cualquier tecla para continuar..." -ForegroundColor Yellow
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 }
 
 # ============================================
@@ -640,8 +635,7 @@ do {
     if ($option.ToUpper() -eq "WALLPC" -or $option.ToUpper() -eq "GALAPC") {
         $profileName      = $option.ToUpper()
         $selectedPrograms = $Profiles[$profileName]
-
-        $selectedTweaks = @(
+        $selectedTweaks   = @(
             "ClassicContextMenu",
             "DisableInactivityTimeout",
             "ScreenTimeout",
@@ -682,9 +676,12 @@ do {
         '2' {
             Register-MaintenanceTasks
         }
+        '3' {
+            Invoke-ActWin
+        }
         '0' {
             Write-Log "Script finalizado por el usuario." "INFO"
-            Write-LogSeparator "FIN DE SESIÓN  -  $(Get-Date -Format 'dddd dd/MM/yyyy HH:mm:ss')"
+            Write-LogSeparator "FIN DE SESIÓN - $(Get-Date -Format 'dddd dd/MM/yyyy HH:mm:ss')"
             Write-Host "`n¡Hasta luego!" -ForegroundColor Cyan
             exit
         }
